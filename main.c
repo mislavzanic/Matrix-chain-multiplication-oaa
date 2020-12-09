@@ -1,39 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "helper.h"
 
 #define N 1000
 #define INF -1
 
-int zagrade[N][N];
+typedef int** mat;
 
-int dinamika(int *niz_dimenzija, int start, int end)
+int P[N][N];
+int S[N][N];
+
+int opt_solution(int *dim_array, int n)
 {
-    if (start == end) return zagrade[start][end];
-    int min = INF;
-    for (int k = start; k < end; ++k)
+    for (int l = 2; l < n; ++l)
     {
-        int temp = dinamika(niz_dimenzija, start, k) + dinamika(niz_dimenzija, k+1, end) + niz_dimenzija[start - 1] * niz_dimenzija[k] * niz_dimenzija[end];
-        if (temp < min || min == INF)
+        for (int i = 1; i < n - l + 1; ++i)
         {
-            min = temp;
+            int j = i + l - 1;
+            for (int k = i; k < j; ++k)
+            {
+                int q = P[i][k] + P[k + 1][j] + dim_array[i - 1] * dim_array[k] * dim_array[j];
+                if (q < P[i][j] || P[i][j] == INF)
+                {
+                    P[i][j] = q;
+                    S[i][j] = k;
+                }
+            }
         }
     }
-    zagrade[start][end] = min;
-    return zagrade[start][end];
+    return P[1][n - 1];
 }
 
-int main()
+void recreate(int start, int end, int* index, int i)
 {
-    int niz_dimenzija[] = {1, 2, 3, 4};
+    if (start == end)
+    {
+        printf("A_%d", start);
+        index[start] = i;
+    }
+    else
+    {
+        printf("(");
+        recreate(start, S[start][end], index, i + 1);
+        recreate(S[start][end] + 1, end, index, i + 1);
+        printf(")");
+    }
+}
+
+void init()
+{
     for (int i = 0; i < N; ++i)
     {
         for (int j = 0; j < N; ++j)
         {
-            if (i == j) zagrade[i][j] = 0;
-            else zagrade[i][j] = INF;
+            if (i == j)
+            {
+                S[i][j] = 1;
+                P[i][j] = 0;
+            }
+            else P[i][j] = INF;
         }
     }
-    int opt_dim = dinamika(niz_dimenzija, 1, 3);
-    printf("Optimalan broj mnozenja je %d", opt_dim);
+}
+
+int main(int argc, char** argv)
+{
+//    if (argc < 2) printf("Call: ./program_name infile_path");
+
+    char* filepath = argv[1];
+    int dim_array[] = {30, 35, 15, 5, 10, 20, 25};
+    int* index = (int*)malloc(6 * sizeof(int));
+    init();
+    int opt_dim = opt_solution(dim_array, 7);
+    recreate(1, 6, index, 0);
+    printf("\n");
+    printf("Optimalan broj mnozenja je %d\n", opt_dim);
     return 0;
 }

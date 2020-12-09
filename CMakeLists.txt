@@ -3,4 +3,4 @@ project(Matrix_chain_multiplication C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Matrix_chain_multiplication main.c)
+add_executable(Matrix_chain_multiplication main.c helper.h)
