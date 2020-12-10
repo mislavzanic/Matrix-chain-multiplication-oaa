@@ -1,22 +1,11 @@
-#ifndef MATRIX_CHAIN_MULTIPLICATION_HELPER_H
-#define MATRIX_CHAIN_MULTIPLICATION_HELPER_H
+#ifndef MATRIX_CHAIN_MULTIPLICATION_MAT_UTIL_H
+#define MATRIX_CHAIN_MULTIPLICATION_MAT_UTIL_H
 
+#include "time_util.h"
+#include "defines.h"
 #include <stdlib.h>
 #include <assert.h>
-#include <time.h>
 
-typedef int** mat;
-
-double time_matr_multipl(mat (*func)(), void (*Free)(), int start, int end, mat* args1, int* args2, int** args3)
-{
-    clock_t time1, time2;
-    time1 = clock();
-        mat A = func(start, end, args1, args2, args3);
-    time2 = clock();
-    Free(A, args2[start - 1]);
-
-    return ((double)(end - start)) / CLOCKS_PER_SEC;
-}
 
 mat create_mat(int n, int m)
 {
@@ -24,12 +13,16 @@ mat create_mat(int n, int m)
     for (int i = 0; i < n; ++i)
     {
         A[i] = (int*)malloc(m * sizeof(int));
+        for (int j = 0; j < m; ++j)
+        {
+            A[i][j] = (i == j);
+        }
     }
 
     return A;
 }
 
-mat multiply(mat A, mat B, int n, int k, int m)
+mat multiply(const mat A, const mat B, int n, int k, int m)
 {
     mat C = create_mat(n, m);
     for (int i = 0; i < n; ++i)
@@ -57,7 +50,7 @@ void Free(mat A, int n)
     free(A);
 }
 
-mat multiply_array(int start, int end, mat* mat_array, int* dim_array, int** S)
+mat multiply_array(int start, int end, const mat* mat_array, const int* dim_array, const int** S)
 {
     if (start == end)
     {
@@ -75,14 +68,25 @@ mat multiply_array(int start, int end, mat* mat_array, int* dim_array, int** S)
     }
 }
 
-void time_matrix_multiplications(int** P, int** S, int N)
+mat* generate_mat_array(const int* dim_array, int n)
 {
-    //mat* mat_array = generate_mat_array();
+    mat *array = (mat*)malloc((n - 1) * sizeof(mat));
+    for (int i = 0; i < n - 1; ++i)
+    {
+        array[i] = create_mat(dim_array[i], dim_array[i+1]);
+    }
+
+    return array;
+}
+
+void time_matrix_multiplications(const int** PP, const int* dim_array, int n)
+{
+    mat* mat_array = generate_mat_array(dim_array, n);
     mat result;
     double result1, result2;
-    result1 = time_matr_multipl(multiply_array, Free, 1, 6, mat_array, dim_array, S);
-    result2 = time_matr_multipl(multiply_array, Free, 1, 6, mat_array, dim_array, S);
+    result1 = time_matr_multipl(multiply_array, Free, 1, 6, mat_array, dim_array, PP);
+    result2 = time_matr_multipl(multiply_array, Free, 1, 6, mat_array, dim_array, PP);
     printf("%f %f", result1, result2);
 }
 
-#endif //MATRIX_CHAIN_MULTIPLICATION_HELPER_H
+#endif //MATRIX_CHAIN_MULTIPLICATION_MAT_UTIL_H

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "helper.h"
 
-#define N 1000
-#define INF -1
+#include "mat_util.h"
+#include "defines.h"
+
 
 typedef int** mat;
 
@@ -28,21 +28,21 @@ int opt_solution(int *dim_array, int n, int** P, int** S)
     return P[1][n - 1];
 }
 
-void init(int** P, int** S)
+void init(int*** P, int*** S)
 {
-    P = (int**)malloc(N * sizeof(int*)); S = (int**)malloc(N * sizeof(int*));
+    *P = (int**)malloc(N * sizeof(int*)); *S = (int**)malloc(N * sizeof(int*));
     for (int i = 0; i < N; ++i)
     {
-        P[i] = (int*)malloc(N * sizeof(int));
-        S[i] = (int*)malloc(N * sizeof(int));
+        (*P)[i] = (int*)malloc(N * sizeof(int));
+        (*S)[i] = (int*)malloc(N * sizeof(int));
         for (int j = 0; j < N; ++j)
         {
             if (i == j)
             {
-                S[i][j] = 1;
-                P[i][j] = 0;
+                (*S)[i][j] = 1;
+                (*P)[i][j] = 0;
             }
-            else P[i][j] = INF;
+            else (*P)[i][j] = INF;
         }
     }
 }
@@ -52,11 +52,10 @@ int main(int argc, char** argv)
 //    if (argc < 2) printf("Call: ./program_name infile_path");
     char* filepath = argv[1];
     int dim_array[] = {30, 35, 15, 5, 10, 20, 25};
-    int* index = (int*)malloc(6 * sizeof(int));
-    int **P, **S; init(P, S);
+    int **DP, **Par_placement; init(&DP, &Par_placement);
 
-    int opt_dim = opt_solution(dim_array, 7, P, S);
+    int opt_dim = opt_solution(dim_array, 7, DP, Par_placement);
     printf("Optimalan broj mnozenja je %d\n", opt_dim);
-    time_matrix_multiplications(P, S, N);
+    time_matrix_multiplications((const int *)Par_placement, dim_array, 7);
     return 0;
 }
