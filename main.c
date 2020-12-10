@@ -56,6 +56,6 @@ int main(int argc, char** argv)
 
     int opt_dim = opt_solution(dim_array, 7, DP, Par_placement);
     printf("Optimalan broj mnozenja je %d\n", opt_dim);
-    time_matrix_multiplications((const int *)Par_placement, dim_array, 7);
+    time_matrix_multiplications(Par_placement, dim_array, 7);
     return 0;
 }
