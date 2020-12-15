@@ -7,7 +7,7 @@
 
 typedef int** mat;
 
-int opt_solution(int *dim_array, int n, int** P, int** S)
+long opt_solution(int *dim_array, int n, ull** P, ull** S)
 {
     for (int l = 2; l < n; ++l)
     {
@@ -16,7 +16,7 @@ int opt_solution(int *dim_array, int n, int** P, int** S)
             int j = i + l - 1;
             for (int k = i; k < j; ++k)
             {
-                int q = P[i][k] + P[k + 1][j] + dim_array[i - 1] * dim_array[k] * dim_array[j];
+                ull q = P[i][k] + P[k + 1][j] + dim_array[i - 1] * dim_array[k] * dim_array[j];
                 if (q < P[i][j] || P[i][j] == INF)
                 {
                     P[i][j] = q;
@@ -28,13 +28,13 @@ int opt_solution(int *dim_array, int n, int** P, int** S)
     return P[1][n - 1];
 }
 
-void init(int*** P, int*** S)
+void init(ull*** P, ull*** S)
 {
-    *P = (int**)malloc(N * sizeof(int*)); *S = (int**)malloc(N * sizeof(int*));
+    *P = (ull**)malloc(N * sizeof(ull*)); *S = (ull**)malloc(N * sizeof(ull*));
     for (int i = 0; i < N; ++i)
     {
-        (*P)[i] = (int*)malloc(N * sizeof(int));
-        (*S)[i] = (int*)malloc(N * sizeof(int));
+        (*P)[i] = (ull*)malloc(N * sizeof(ull));
+        (*S)[i] = (ull*)malloc(N * sizeof(ull));
         for (int j = 0; j < N; ++j)
         {
             if (i == j)
@@ -47,15 +47,32 @@ void init(int*** P, int*** S)
     }
 }
 
+int* read_from_file(char* filepath)
+{
+    FILE *in;
+    int* dim_array = NULL;
+    int arr_len;
+    in = fopen(filepath, "r");
+    fscanf(in, "%d\n", &arr_len);
+    dim_array = (int*)malloc(arr_len * sizeof(int));
+    for (int i = 0; i < arr_len; ++i)
+    {
+        fscanf(in, "%d ", dim_array + i);
+    }
+    fclose(in);
+    return dim_array;
+}
+
 int main(int argc, char** argv)
 {
-//    if (argc < 2) printf("Call: ./program_name infile_path");
+    if (argc < 2) printf("Call: ./program_name infile_path");
     char* filepath = argv[1];
-    int dim_array[] = {30, 35, 15, 5, 10, 20, 25};
-    int **DP, **Par_placement; init(&DP, &Par_placement);
+    int* dim_array = read_from_file(filepath);
+    ull **DP, **Par_placement; init(&DP, &Par_placement);
 
-    int opt_dim = opt_solution(dim_array, 7, DP, Par_placement);
-    printf("Optimalan broj mnozenja je %d\n", opt_dim);
-    time_matrix_multiplications(Par_placement, dim_array, 7);
+    ull opt_dim = opt_solution(dim_array, 14, DP, Par_placement);
+    printf("Optimalan broj mnozenja je %u\n", opt_dim);
+    time_matrix_multiplications(Par_placement, dim_array, 14);
+    free(dim_array);
     return 0;
 }

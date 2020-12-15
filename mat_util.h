@@ -22,7 +22,7 @@ mat create_mat(int n, int m)
     return A;
 }
 
-mat multiply(const mat A, const mat B, int n, int k, int m)
+mat multiply_mat(const mat A, const mat B, int n, int k, int m)
 {
     mat C = create_mat(n, m);
     for (int i = 0; i < n; ++i)
@@ -40,7 +40,7 @@ mat multiply(const mat A, const mat B, int n, int k, int m)
     return C;
 }
 
-void Free(mat A, int n)
+void free_mat(mat A, int n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -50,12 +50,7 @@ void Free(mat A, int n)
     free(A);
 }
 
-void get_normal_order(int*** PP)
-{
-
-}
-
-mat multiply_array(int start, int end, mat* mat_array, const int* dim_array, const int** S)
+mat multiply_array(int start, int end, mat* mat_array, const int* dim_array, const ull** S)
 {
     if (start == end)
     {
@@ -66,9 +61,9 @@ mat multiply_array(int start, int end, mat* mat_array, const int* dim_array, con
         mat A, B, C;
         A = multiply_array(start, S[start][end], mat_array, dim_array, S);
         B = multiply_array(S[start][end] + 1, end, mat_array, dim_array, S);
-        C = multiply(A, B, dim_array[start - 1], dim_array[S[start][end]], dim_array[end]);
-        Free(A, dim_array[start - 1]);
-        Free(B, dim_array[S[start][end]]);
+        C = multiply_mat(A, B, dim_array[start - 1], dim_array[S[start][end]], dim_array[end]);
+        free_mat(A, dim_array[start - 1]);
+        free_mat(B, dim_array[S[start][end]]);
         return C;
     }
 }
@@ -78,9 +73,9 @@ mat multiply_in_order(int start, int end, mat* mat_array, int* dim_array, const 
     mat A;
     for (int i = start; i < end; ++i)
     {
-        A = multiply(mat_array[i - 1], mat_array[i], dim_array[i - 1], dim_array[i], dim_array[i + 1]);
-        Free(mat_array[i - 1], dim_array[i - 1]);
-        Free(mat_array[i], dim_array[i]);
+        A = multiply_mat(mat_array[i - 1], mat_array[i], dim_array[i - 1], dim_array[i], dim_array[i + 1]);
+        free_mat(mat_array[i - 1], dim_array[i - 1]);
+        free_mat(mat_array[i], dim_array[i]);
         mat_array[i] = A;
         dim_array[i] = dim_array[i - 1];
     }
@@ -98,15 +93,16 @@ mat* generate_mat_array(const int* dim_array, int n)
     return array;
 }
 
-void time_matrix_multiplications(int** PP, const int* dim_array, int n)
+void time_matrix_multiplications(ull** PP, const int* dim_array, int n)
 {
     mat* mat_array = generate_mat_array(dim_array, n);
     double result1, result2;
-    result1 = time_matr_multipl(multiply_array, Free, 1, 6, mat_array, dim_array, PP);
+    result1 = time_function(multiply_array, free_mat, 1, 6, mat_array, dim_array, PP);
+    printf("Optimal: %f\n", result1);
     mat_array = generate_mat_array(dim_array, n);
-    Free(PP, N);
-    result2 = time_matr_multipl(multiply_in_order, Free, 1, 6, mat_array, dim_array, NULL);
-    printf("%f %f", result1, result2);
+    free_mat(PP, N);
+    result2 = time_function(multiply_in_order, free_mat, 1, 6, mat_array, dim_array, NULL);
+    printf("In order: %f\n", result2);
 }
 
 #endif //MATRIX_CHAIN_MULTIPLICATION_MAT_UTIL_H
