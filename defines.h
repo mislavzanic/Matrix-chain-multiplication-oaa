@@ -4,7 +4,7 @@
 #define N 1000
 #define INF -1
 
-typedef int** mat;
-typedef unsigned long long ull;
+typedef long long ll;
+typedef ll** mat;
 
 #endif //MATRIX_CHAIN_MULTIPLICATION_DEFINES_H

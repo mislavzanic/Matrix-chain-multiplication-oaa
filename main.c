@@ -5,9 +5,8 @@
 #include "defines.h"
 
 
-typedef int** mat;
 
-long opt_solution(int *dim_array, int n, ull** P, ull** S)
+long opt_solution(const ll *dim_array, int n, ll** P, ll** S)
 {
     for (int l = 2; l < n; ++l)
     {
@@ -16,7 +15,7 @@ long opt_solution(int *dim_array, int n, ull** P, ull** S)
             int j = i + l - 1;
             for (int k = i; k < j; ++k)
             {
-                ull q = P[i][k] + P[k + 1][j] + dim_array[i - 1] * dim_array[k] * dim_array[j];
+                ll q = P[i][k] + P[k + 1][j] + dim_array[i - 1] * dim_array[k] * dim_array[j];
                 if (q < P[i][j] || P[i][j] == INF)
                 {
                     P[i][j] = q;
@@ -28,13 +27,13 @@ long opt_solution(int *dim_array, int n, ull** P, ull** S)
     return P[1][n - 1];
 }
 
-void init(ull*** P, ull*** S)
+void init(ll*** P, ll*** S)
 {
-    *P = (ull**)malloc(N * sizeof(ull*)); *S = (ull**)malloc(N * sizeof(ull*));
+    *P = (ll**)malloc(N * sizeof(ll*)); *S = (ll**)malloc(N * sizeof(ll*));
     for (int i = 0; i < N; ++i)
     {
-        (*P)[i] = (ull*)malloc(N * sizeof(ull));
-        (*S)[i] = (ull*)malloc(N * sizeof(ull));
+        (*P)[i] = (ll*)malloc(N * sizeof(ll));
+        (*S)[i] = (ll*)malloc(N * sizeof(ll));
         for (int j = 0; j < N; ++j)
         {
             if (i == j)
@@ -47,17 +46,16 @@ void init(ull*** P, ull*** S)
     }
 }
 
-int* read_from_file(char* filepath)
+ll* read_from_file(char* filepath, int *n)
 {
     FILE *in;
-    int* dim_array = NULL;
-    int arr_len;
+    ll* dim_array = NULL;
     in = fopen(filepath, "r");
-    fscanf(in, "%d\n", &arr_len);
-    dim_array = (int*)malloc(arr_len * sizeof(int));
-    for (int i = 0; i < arr_len; ++i)
+    fscanf(in, "%d\n", n);
+    dim_array = (ll*)malloc(*n * sizeof(ll));
+    for (int i = 0; i < *n; ++i)
     {
-        fscanf(in, "%d ", dim_array + i);
+        fscanf(in, "%llu ", dim_array + i);
     }
     fclose(in);
     return dim_array;
@@ -67,12 +65,18 @@ int main(int argc, char** argv)
 {
     if (argc < 2) printf("Call: ./program_name infile_path");
     char* filepath = argv[1];
-    int* dim_array = read_from_file(filepath);
-    ull **DP, **Par_placement; init(&DP, &Par_placement);
+    int arr_len;
+    ll sum = 0;
+    ll* dim_array = read_from_file(filepath, &arr_len);
+    ll **DP, **Par_placement; init(&DP, &Par_placement);
 
-    ull opt_dim = opt_solution(dim_array, 14, DP, Par_placement);
-    printf("Optimalan broj mnozenja je %u\n", opt_dim);
-    time_matrix_multiplications(Par_placement, dim_array, 14);
+    ll opt_dim = opt_solution(dim_array, arr_len, DP, Par_placement);
+    printf("Optimalan broj mnozenja je %lld\n", opt_dim);
+
+    for (int i = 1; i < arr_len; i++) sum += dim_array[i] * dim_array[i+1];
+    printf("Broj mnozenja po redu je %lld\n", sum * dim_array[0]);
+
+    time_matrix_multiplications(Par_placement, dim_array, arr_len);
     free(dim_array);
     return 0;
 }

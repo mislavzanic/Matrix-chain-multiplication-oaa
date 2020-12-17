@@ -4,7 +4,7 @@
 #include <time.h>
 #include "defines.h"
 
-double time_function(mat (*func)(), void (*free_mat)(), int start, int end, const mat* args1, const int* args2, const ull** args3)
+double time_function(mat (*func)(int, int, mat*, ll*, ll**), void (*free_mat)(mat, ll), int start, int end, mat* args1, ll* args2, ll** args3)
 {
     clock_t time1, time2;
     time1 = clock();

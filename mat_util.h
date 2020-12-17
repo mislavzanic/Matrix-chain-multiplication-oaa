@@ -9,10 +9,10 @@
 
 mat create_mat(int n, int m)
 {
-    mat A = (int**)malloc(n * sizeof(int*));
+    mat A = (mat)malloc(n * sizeof(ll*));
     for (int i = 0; i < n; ++i)
     {
-        A[i] = (int*)malloc(m * sizeof(int));
+        A[i] = (ll*)malloc(m * sizeof(ll));
         for (int j = 0; j < m; ++j)
         {
             A[i][j] = (i == j);
@@ -40,7 +40,7 @@ mat multiply_mat(const mat A, const mat B, int n, int k, int m)
     return C;
 }
 
-void free_mat(mat A, int n)
+void free_mat(mat A, ll n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -50,7 +50,7 @@ void free_mat(mat A, int n)
     free(A);
 }
 
-mat multiply_array(int start, int end, mat* mat_array, const int* dim_array, const ull** S)
+mat multiply_array(int start, int end, mat* mat_array, ll* dim_array, ll** S)
 {
     if (start == end)
     {
@@ -68,7 +68,7 @@ mat multiply_array(int start, int end, mat* mat_array, const int* dim_array, con
     }
 }
 
-mat multiply_in_order(int start, int end, mat* mat_array, int* dim_array, const int** extra)
+mat multiply_in_order(int start, int end, mat* mat_array, ll* dim_array, ll** extra)
 {
     mat A;
     for (int i = start; i < end; ++i)
@@ -82,7 +82,7 @@ mat multiply_in_order(int start, int end, mat* mat_array, int* dim_array, const 
     return A;
 }
 
-mat* generate_mat_array(const int* dim_array, int n)
+mat* generate_mat_array(const ll* dim_array, int n)
 {
     mat *array = (mat*)malloc((n - 1) * sizeof(mat));
     for (int i = 0; i < n - 1; ++i)
@@ -93,7 +93,7 @@ mat* generate_mat_array(const int* dim_array, int n)
     return array;
 }
 
-void time_matrix_multiplications(ull** PP, const int* dim_array, int n)
+void time_matrix_multiplications(ll** PP, ll* dim_array, int n)
 {
     mat* mat_array = generate_mat_array(dim_array, n);
     double result1, result2;
