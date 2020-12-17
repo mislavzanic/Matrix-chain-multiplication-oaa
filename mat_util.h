@@ -25,6 +25,7 @@ mat create_mat(int n, int m)
 mat multiply_mat(const mat A, const mat B, int n, int k, int m)
 {
     mat C = create_mat(n, m);
+    double time1 = clock();
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < m; ++j)
@@ -36,7 +37,8 @@ mat multiply_mat(const mat A, const mat B, int n, int k, int m)
             }
         }
     }
-
+    time1 = (clock() - time1) / CLOCKS_PER_SEC;
+    printf("Multiplied %d x %d with %d x %d in %f\n", n, k, k, m, time1);
     return C;
 }
 
@@ -97,11 +99,11 @@ void time_matrix_multiplications(ll** PP, ll* dim_array, int n)
 {
     mat* mat_array = generate_mat_array(dim_array, n);
     double result1, result2;
-    result1 = time_function(multiply_array, free_mat, 1, 6, mat_array, dim_array, PP);
+    result1 = time_function(multiply_array, free_mat, 1, n - 1, mat_array, dim_array, PP);
     printf("Optimal: %f\n", result1);
     mat_array = generate_mat_array(dim_array, n);
     free_mat(PP, N);
-    result2 = time_function(multiply_in_order, free_mat, 1, 6, mat_array, dim_array, NULL);
+    result2 = time_function(multiply_in_order, free_mat, 1, n - 1, mat_array, dim_array, NULL);
     printf("In order: %f\n", result2);
 }
 
