@@ -1,0 +1,19 @@
+#+TITLE: Matrix multiplication
+
+* Uvod
+** Pojmovi
+*** Ulancane matrice -- ...
+*** Niz ulancanih matrica -- ...
+*** Niz ulancanih matrica u potpunosti u zagradama -- ...
+** Opis problema
+*** Za dani niz ulancanih matrica A1,...,An trebamo izracunati A1*...*An
+**** Niz matrica mozemo 'zagraditi' na Cn (Catalanov broj) nacina
+*** => A1*...*An mozemo izracunati na Cn nacina .. jesu li svi nacini jednako 'zahtjevni' za izracunati
+**** Nisu ... 1x2 2x3 3x4 primjer ...
+*** Azurirani opis problema
+**** Za dani niz ulancanih matrica A1,...,An treba pronaci raspored mnozenja t.d. minimiziramo sveukupni broj mnozenja <=> raspored postavljanja zagrada
+* Pronalazak optimalnog redoslijeda mnozenja
+** Dinamicko programiranje
+*** ... algoritam za pronalazak broj skalarnih umnozaka optimalnog redoslijeda mnozenja ...
+*** ... algoritam za redoslijed optimalnog mnozenja ...
+* Testni primjeri + grafovi

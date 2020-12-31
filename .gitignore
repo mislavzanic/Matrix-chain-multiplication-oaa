@@ -1,2 +1,6 @@
 .idea
 cmake-build-debug
+*.log
+*.fls
+*.aux
+*.tex
